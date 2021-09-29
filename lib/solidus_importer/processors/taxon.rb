@@ -11,6 +11,7 @@ module SolidusImporter
         self.product = context.fetch(:product)
 
         process_taxons_type
+        process_taxons_brand
         process_taxons_tags
       end
 
@@ -18,8 +19,9 @@ module SolidusImporter
 
       def options
         @options ||= {
-          type_taxonomy: Spree::Taxonomy.find_or_create_by(name: 'Type'),
-          tags_taxonomy: Spree::Taxonomy.find_or_create_by(name: 'Tags')
+          type_taxonomy: Spree::Taxonomy.find_or_create_by(name: 'Categories'),
+          tags_taxonomy: Spree::Taxonomy.find_or_create_by(name: 'Tags'),
+          brands_taxonomy: Spree::Taxonomy.find_or_create_by(name: 'Brands')
         }
       end
 
@@ -27,6 +29,12 @@ module SolidusImporter
         return unless type
 
         add_taxon(prepare_taxon(type, options[:type_taxonomy]))
+      end
+
+      def process_taxons_brand
+        return unless brand
+
+        add_taxon(prepare_taxon(brand, options[:brands_taxonomy]))
       end
 
       def process_taxons_tags
@@ -54,6 +62,10 @@ module SolidusImporter
 
       def type
         @data['Type'].presence
+      end
+
+      def brand
+        @data['Vendor'].presence
       end
     end
   end

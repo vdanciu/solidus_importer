@@ -31,7 +31,7 @@ module SolidusImporter
       def process_product
         prepare_product.tap do |product|
           product.slug = @data['Handle']
-          product.price = options[:price]
+          product.price = @data['Variant Price'] || options[:price]
           product.available_on = available? ? options[:available_on] : options[:not_available]
           product.shipping_category = options[:shipping_category]
 
@@ -44,7 +44,7 @@ module SolidusImporter
       end
 
       def available?
-        @data['Published'] == 'true'
+        @data['Published']&.downcase == 'true'
       end
     end
   end

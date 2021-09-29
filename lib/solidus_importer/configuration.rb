@@ -27,6 +27,7 @@ module SolidusImporter
         importer: SolidusImporter::BaseImporter,
         processors: [
           SolidusImporter::Processors::Product,
+          SolidusImporter::Processors::Taxon,
           SolidusImporter::Processors::Variant,
           SolidusImporter::Processors::OptionTypes,
           SolidusImporter::Processors::OptionValues,
