@@ -26,7 +26,7 @@ module SolidusImporter
         end
 
         if attachment.match?(/^http/)
-          io = URI.parse(attachment).open
+          io = URI.parse(attachment).open({ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE})
           io.define_singleton_method(:to_path) do
             File.basename(URI.parse(attachment).path)
           end
