@@ -43,7 +43,7 @@ module SolidusImporter
 
       def master_variant?
         ov1 = @data['Option1 Value']
-        ov1.blank? || ov1 == 'Default Title'
+        (ov1.blank? || ov1 == 'Default Title') && @data['Variant SKU'].blank?
       end
 
       def sku

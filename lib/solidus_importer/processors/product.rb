@@ -37,7 +37,7 @@ module SolidusImporter
 
           # Apply the row attributes
           product.name = @data['Title'] unless @data['Title'].nil?
-          product.description = @data['Body (HTML)']
+          product.description = @data['Body (HTML)'] if @data['Body (HTML)'].present?
 
           # Save the product
           product.save!
