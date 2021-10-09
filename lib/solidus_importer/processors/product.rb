@@ -30,14 +30,20 @@ module SolidusImporter
 
       def process_product
         prepare_product.tap do |product|
+          # this will run for every row in a product (variants, variants images)
+          # but don't need processing but once and that will be by convention for
+          # the row that has the 'title' filled
+          next unless @data['Title'].present?
+
           product.slug = @data['Handle']
           product.price = @data['Variant Price'] || options[:price]
           product.available_on = available? ? options[:available_on] : options[:not_available]
           product.shipping_category = options[:shipping_category]
 
           # Apply the row attributes
-          product.name = @data['Title'] unless @data['Title'].nil?
-          product.description = @data['Body (HTML)'] if @data['Body (HTML)'].present?
+          product.name = @data['Title']
+          product.description = @data['Body (HTML)']
+          product.meta_title = @data['SEO Title']
 
           # Save the product
           product.save!
