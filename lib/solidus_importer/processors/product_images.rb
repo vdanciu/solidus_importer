@@ -19,6 +19,9 @@ module SolidusImporter
       end
 
       def process_images(product)
+        # TODO:
+        # destroying previous images should be configurable
+        product.images.destroy_all
         product.images << prepare_image
       end
 

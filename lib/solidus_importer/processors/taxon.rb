@@ -48,6 +48,9 @@ module SolidusImporter
       end
 
       def prepare_taxon(name, taxonomy)
+        # this doesn't work well when it has to create the taxon
+        # as it will create it without a parent (the parent should be
+        # the root taxon for that taxonomy)
         Spree::Taxon.find_or_initialize_by(
           name: name,
           taxonomy_id: taxonomy.id

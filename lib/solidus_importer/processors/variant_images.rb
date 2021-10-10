@@ -13,10 +13,17 @@ module SolidusImporter
         @data = context.fetch(:data)
         return unless variant_image?
         variant = context.fetch(:variant)
+        # TODO:
+        # wiping previous images should be optional (as in an option you can se)
+        wipe_images(variant) if @data['Variant Inventory Qty'].present?
         process_images(variant)
       end
 
       private
+
+      def wipe_images(variant)
+        variant.images.destroy_all
+      end
 
       def prepare_image
         attachment = @data['Variant Image']

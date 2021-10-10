@@ -36,7 +36,10 @@ module SolidusImporter
           # TODO: upate to use multiple stock locations depending on the import file row
           if @data['Variant Inventory Qty'].present?
             stock_item = Spree::StockLocation.order_default.first&.stock_item_or_create(variant)
-            stock_item&.adjust_count_on_hand(@data['Variant Inventory Qty'].to_i)
+            # TODO:
+            # use adjust_count_on_hand if want to add to existing stock (should be configurable)
+            stock_item&.set_count_on_hand(@data['Variant Inventory Qty'].to_i)
+            stock_item.backorderable = false if stock_item
           end
         end
       end
