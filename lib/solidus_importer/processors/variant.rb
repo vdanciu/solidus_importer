@@ -38,8 +38,11 @@ module SolidusImporter
             stock_item = Spree::StockLocation.order_default.first&.stock_item_or_create(variant)
             # TODO:
             # use adjust_count_on_hand if want to add to existing stock (should be configurable)
-            stock_item&.set_count_on_hand(@data['Variant Inventory Qty'].to_i)
-            stock_item.backorderable = false if stock_item
+            if !stock_item.nil?
+              stock_item.set_count_on_hand(@data['Variant Inventory Qty'].to_i)
+              stock_item.backorderable = false
+              stock_item.save!
+            end
           end
         end
       end
