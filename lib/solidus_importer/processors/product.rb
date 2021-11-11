@@ -41,9 +41,9 @@ module SolidusImporter
           product.shipping_category = options[:shipping_category]
 
           # Apply the row attributes
-          product.name = @data['Title']
-          product.description = @data['Body (HTML)']
-          product.meta_title = @data['SEO Title']
+          product.name = @data['Title'] || ''
+          product.description = @data['Body (HTML)'] || ''
+          product.meta_title = @data['SEO Title'] || product.name
 
           # Save the product
           product.save!
