@@ -19,8 +19,11 @@ module SolidusImporter
         option_value_names.each_with_index do |name, i|
           next if name.empty?
 
+          ot = option_type(i)
+          raise ::SolidusImporter::Exception, "Option Type not found: #{@data}" if ot.nil?
+
           option_value = Spree::OptionValue.find_or_initialize_by(
-            option_type: option_type(i),
+            option_type:ot,
             name: name.parameterize
           )
           option_value.presentation = name

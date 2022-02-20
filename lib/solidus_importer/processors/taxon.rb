@@ -26,15 +26,12 @@ module SolidusImporter
       end
 
       def process_taxons_type
-        return unless type
-
-        add_taxon(prepare_taxon(type, options[:type_taxonomy]))
-      end
-
-      def process_taxons_brand
-        return unless brand
-
-        add_taxon(prepare_taxon(brand, options[:brands_taxonomy]))
+        parent = nil
+        types.map do |type|
+          taxon = prepare_taxon(type, options[:type_taxonomy], parent)
+          add_taxon(taxon)
+          parent ||= taxon
+        end
       end
 
       def process_taxons_tags
@@ -43,18 +40,22 @@ module SolidusImporter
         end
       end
 
+      def process_taxons_brand
+        return unless brand
+
+        add_taxon(prepare_taxon(brand, options[:brands_taxonomy]))
+      end
+
       def add_taxon(taxon)
         product.taxons << taxon unless product.taxons.include?(taxon)
       end
 
-      def prepare_taxon(name, taxonomy)
-        # this doesn't work well when it has to create the taxon
-        # as it will create it without a parent (the parent should be
-        # the root taxon for that taxonomy)
-        Spree::Taxon.find_or_initialize_by(
+      def prepare_taxon(name, taxonomy, parent = nil)
+        parent_id = parent ? parent.id : taxonomy.root.id
+        Spree::Taxon.find_or_create_by(
           name: name,
           taxonomy_id: taxonomy.id,
-          parent_id: taxonomy.root.id
+          parent_id: parent_id
         )
       end
 
@@ -64,8 +65,10 @@ module SolidusImporter
         @data['Tags'].split(',').map(&:strip)
       end
 
-      def type
-        @data['Type'].presence
+      def types
+        return [] unless @data['Type'].presence
+
+        @data['Type'].split(',').map(&:strip)
       end
 
       def brand

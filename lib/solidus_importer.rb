@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'util/logger'
+
 require 'solidus_core'
 require 'solidus_support'
 
