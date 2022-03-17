@@ -13,6 +13,7 @@ module SolidusImporter
         process_taxons_type
         process_taxons_brand
         process_taxons_tags
+        process_taxons_seasons
       end
 
       private
@@ -21,6 +22,7 @@ module SolidusImporter
         @options ||= {
           type_taxonomy: Spree::Taxonomy.find_or_create_by(name: 'Categories'),
           tags_taxonomy: Spree::Taxonomy.find_or_create_by(name: 'Tags'),
+          seasons_taxonomy: Spree::Taxonomy.find_or_create_by(name: 'Seasons'),
           brands_taxonomy: Spree::Taxonomy.find_or_create_by(name: 'Brands')
         }
       end
@@ -37,6 +39,12 @@ module SolidusImporter
       def process_taxons_tags
         tags.map do |tag|
           add_taxon(prepare_taxon(tag, options[:tags_taxonomy]))
+        end
+      end
+
+      def process_taxons_seasons
+        seasons.map do |season|
+          add_taxon(prepare_taxon(season, options[:seasons_taxonomy]))
         end
       end
 
@@ -63,6 +71,12 @@ module SolidusImporter
         return [] unless @data['Tags'].presence
 
         @data['Tags'].split(',').map(&:strip)
+      end
+
+      def seasons
+        return [] unless @data['Seasons'].presence
+
+        @data['Seasons'].split(',').map(&:strip)
       end
 
       def types
